@@ -6,12 +6,11 @@ Controls an HDFury VRROOM HDMI switch via serial socket.
 
 import argparse
 import logging
-import socket
 import sys
 from typing import List
+import vrroompy.socket as vrroompy
 
 
-COMMAND_TERMINATOR = '\n'
 QUIT_COMMAND = "quit"
 
 def main(address: str, port:int) -> int:
@@ -22,21 +21,15 @@ def main(address: str, port:int) -> int:
     logger = logging.getLogger()
 
     logger.info("Connecting to VRROOM switch at '%s:%d'...", address, port)
-    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as rs232_socket:
-        rs232_socket.connect((address, port))
+    with vrroompy.Socket(address, port) as vrroom_socket:
         logger.info("Successfully connected to VRROOM switch.")
         logger.info("Enter the command '%s' to quit.", QUIT_COMMAND)
 
         command = input("Enter command: ")
         while(command != QUIT_COMMAND):
             logger.debug("Sending command '%s'...", command)
-
-            if(command[-1:] != COMMAND_TERMINATOR):
-                command += COMMAND_TERMINATOR
-            rs232_socket.send(command.encode())
-
-            response = rs232_socket.recv(1024)
-            logger.info("Response: '%s'", response.decode()[:-2])
+            response = vrroom_socket.send_command(command)
+            logger.info("Response: '%s'", response)
 
             command = input("Enter command: ")
 
