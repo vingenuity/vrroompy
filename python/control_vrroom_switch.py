@@ -11,21 +11,34 @@ import sys
 from typing import List
 
 
+COMMAND_TERMINATOR = '\n'
+QUIT_COMMAND = "quit"
+
 def main(address: str, port:int) -> int:
     """
     Contains the main functionality of this script.
     """
-    logging.basicConfig(level=logging.INFO)
+    logging.basicConfig(level=logging.DEBUG)
     logger = logging.getLogger()
 
-    test_command = b"get opmode\n"
-    logger.info("Sending '%s' to VRROOM switch at '%s:%d'...", test_command, address, port)
+    logger.info("Connecting to VRROOM switch at '%s:%d'...", address, port)
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as rs232_socket:
         rs232_socket.connect((address, port))
-        rs232_socket.send(test_command)
-        response = rs232_socket.recv(1024)
+        logger.info("Successfully connected to VRROOM switch.")
+        logger.info("Enter the command '%s' to quit.", QUIT_COMMAND)
 
-    logger.info("Received response '%s'", response)
+        command = input("Enter command: ")
+        while(command != QUIT_COMMAND):
+            logger.debug("Sending command '%s'...", command)
+
+            if(command[-1:] != COMMAND_TERMINATOR):
+                command += COMMAND_TERMINATOR
+            rs232_socket.send(command.encode())
+
+            response = rs232_socket.recv(1024)
+            logger.info("Response: '%s'", response.decode()[:-2])
+
+            command = input("Enter command: ")
 
     return 0
 
