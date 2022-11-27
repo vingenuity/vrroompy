@@ -2,3 +2,7 @@
 __pycache__/
 *.py[cod]
 *$py.class
+
+# Coverage data files & reports
+.coverage
+htmlcov/

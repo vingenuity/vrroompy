@@ -8,21 +8,23 @@ import socket
 
 
 class Socket:
-    COMMAND_TERMINATOR = '\n'
-    RECEIVE_BUFFER_SIZE = 256
+    """
+    Manages VRROOM socket connections.
+    """
+    __COMMAND_TERMINATOR = '\n'
+    __RECEIVE_BUFFER_SIZE = 256
 
     def __init__(self, address:str, port:int) -> None:
         self.__address = address
         self.__port = port
         self.__socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-    def __enter__(self):
-        self.connect(self.__address, self.__port)
+    def __enter__(self) -> "Socket":
+        self.connect()
         return self
 
-    def __exit__(self, exc_type, exc_value, exc_traceback):
-        if not self.closed():
-            self.close()
+    def __exit__(self, exc_type, exc_value, exc_traceback) -> bool:
+        self.close()
         return False
 
     def closed(self) -> bool:
@@ -37,23 +39,25 @@ class Socket:
         """
         Closes the socket connection with the VRROOM switch.
         """
-        self.__socket.close()
+        if not self.closed():
+            self.__socket.close()
 
-    def connect(self, address:str, port:int) -> None:
+    def connect(self) -> None:
         """
-        Connects to the given VRROOM address and port.
+        Connects to the VRROOM address and port given during initialization.
         """
-        self.__socket.connect((address, port))
+        if self.closed():
+            self.__socket.connect((self.__address, self.__port))
 
-    def send_command(self, command:str) -> str:
+    def send_raw_command(self, command:str) -> str:
         """
         Sends a raw string command to the VRROOM switch.
 
         Returns the raw string output from the command.
         """
-        if(command[-1:] != self.COMMAND_TERMINATOR):
-            command += self.COMMAND_TERMINATOR
+        if(command[-1:] != self.__COMMAND_TERMINATOR):
+            command += self.__COMMAND_TERMINATOR
         self.__socket.send(command.encode())
 
-        response = self.__socket.recv(self.RECEIVE_BUFFER_SIZE)
+        response = self.__socket.recv(self.__RECEIVE_BUFFER_SIZE)
         return response.decode()[:-2]
