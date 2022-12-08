@@ -2,13 +2,16 @@
 
 """
 Controls an HDFury VRROOM HDMI switch via serial socket.
+
+Only raw string commands are supported.
 """
 
 import argparse
 import logging
+import socket
 import sys
 from typing import List
-import vrroompy.socket as vrroompy
+from vrroompy.codec import Codec
 
 
 QUIT_COMMAND = "quit"
@@ -21,15 +24,18 @@ def main(address: str, port:int) -> int:
     logger = logging.getLogger()
 
     logger.info("Connecting to VRROOM switch at '%s:%d'...", address, port)
-    with vrroompy.Socket(address, port) as vrroom_socket:
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as vrroom_socket:
+        vrroom_socket.settimeout(5)
+        vrroom_socket.connect((address, port))
         logger.info("Successfully connected to VRROOM switch.")
         logger.info("Enter the command '%s' to quit.", QUIT_COMMAND)
 
         command = input("Enter command: ")
         while(command != QUIT_COMMAND):
             logger.debug("Sending command '%s'...", command)
-            response = vrroom_socket.send_command(command)
-            logger.info("Response: '%s'", response)
+            vrroom_socket.sendall(Codec.encode_command_raw(command))
+            response = vrroom_socket.recv(256)
+            logger.info("Response: '%s'", Codec.decode_response_raw(response))
 
             command = input("Enter command: ")
 
