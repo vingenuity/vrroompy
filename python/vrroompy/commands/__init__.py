@@ -9,6 +9,7 @@ Contains base free functions used by specific getter/setter commands.
 """
 
 DEFAULT_RECEIVE_BUFFER_SIZE = 256
+__VALIDATE_ERROR_FMT ="Returned {0} '{1}' was different than requested ({2})!"
 
 def get_command_base(socket: socket.socket,
                      target: str,
@@ -47,6 +48,6 @@ def set_command_base(socket: socket.socket,
         value_converters)
     for returned, desired in zip(returned_values, desired_values):
         if returned != desired:
-            raise ValueError(Codec.__VALIDATE_ERROR_FMT.format(type(returned).__name__,
+            raise ValueError(__VALIDATE_ERROR_FMT.format(type(returned).__name__,
                                                                 returned,
                                                                 desired))

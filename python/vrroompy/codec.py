@@ -16,7 +16,6 @@ class Codec:
     __COMMAND_FMT_SET = "set {target} {values}"
     __COMMAND_TERMINATOR = '\n'
     __RESPONSE_PATTERN_FMT = "{target} (?P<values>{values})"
-    __VALIDATE_ERROR_FMT ="Returned {0} '{1}' was different than requested ({2})!"
 
     @staticmethod
     def decode_response(response:ByteString,
