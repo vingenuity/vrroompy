@@ -21,7 +21,7 @@ class TestCodec(unittest.TestCase):
             "opmode",
             ["[0-4]"],
             [str])
-        self.assertTrue(decoded_response == ["4"])
+        self.assertEqual(decoded_response, ["4"])
 
         # Custom type, multiple outputs
         decoded_response = Codec.decode_response(
@@ -29,7 +29,7 @@ class TestCodec(unittest.TestCase):
             "insel",
             [Input.pattern(), Input.pattern()],
             [Input.from_string, Input.from_string])
-        self.assertTrue(decoded_response == [Input.RX0, Input.FOLLOW])
+        self.assertEqual(decoded_response, [Input.RX0, Input.FOLLOW])
 
     def test_decode_response_raises(self):
         # Asserts when value pattern does not match response
@@ -42,29 +42,29 @@ class TestCodec(unittest.TestCase):
 
     def test_decode_raw(self):
         decoded_response = Codec.decode_response_raw(b'opmode 4\r\n')
-        self.assertTrue(decoded_response == "opmode 4")
+        self.assertEqual(decoded_response, "opmode 4")
 
         decoded_response = Codec.decode_response_raw(b'insel 3 0\r\n')
-        self.assertTrue(decoded_response == "insel 3 0")
+        self.assertEqual(decoded_response, "insel 3 0")
 
     def test_encode_get(self):
         encoded_command = Codec.encode_command_get("opmode")
-        self.assertTrue(encoded_command == b'get opmode\n')
+        self.assertEqual(encoded_command, b'get opmode\n')
 
     def test_encode_raw(self):
         # Caller provides terminator for us
         encoded_command = Codec.encode_command_raw("get opmode\n")
-        self.assertTrue(encoded_command == b'get opmode\n')
+        self.assertEqual(encoded_command, b'get opmode\n')
 
         # Caller forgets to provide terminator
         encoded_command = Codec.encode_command_raw("set insel 2 4")
-        self.assertTrue(encoded_command == b'set insel 2 4\n')
+        self.assertEqual(encoded_command, b'set insel 2 4\n')
 
     def test_encode_set(self):
         # Single value, str type
         encoded_command = Codec.encode_command_set("opmode", ["2"])
-        self.assertTrue(encoded_command == b'set opmode 2\n')
+        self.assertEqual(encoded_command, b'set opmode 2\n')
 
         # Multiple values, custom type
         encoded_command = Codec.encode_command_set("insel", [Input.RX0, Input.RX1])
-        self.assertTrue(encoded_command == b'set insel 0 1\n')
+        self.assertEqual(encoded_command, b'set insel 0 1\n')
