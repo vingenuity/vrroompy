@@ -5,7 +5,6 @@
 Contains unit tests for base commands in vrroompy.commands.
 """
 
-import socket
 import unittest
 from unittest.mock import MagicMock, patch
 from vrroompy.commands import get_command_base, set_command_base
