@@ -71,29 +71,31 @@ __TARGET_SELECTED_INPUT_TX1 = "inseltx1"
 __VALUE_CONVERTERS_SELECTED_INPUT_TXN = [Input.from_string]
 __VALUE_PATTERNS_SELECTED_INPUT_TXN = [Input.pattern()]
 
-def get_selected_input_tx0(socket: socket.socket) -> List[Input]:
+def get_selected_input_tx0(socket: socket.socket) -> Input:
     """
-    Gets the currently selected inputs of the switch.
+    Gets the currently selected input for output TX0.
     """
-    return get_command_base(
+    returned_values = get_command_base(
         socket,
         __TARGET_SELECTED_INPUT_TX0,
         __VALUE_PATTERNS_SELECTED_INPUT_TXN,
         __VALUE_CONVERTERS_SELECTED_INPUT_TXN)
+    return returned_values[0]
 
-def get_selected_input_tx1(socket: socket.socket) -> List[Input]:
+def get_selected_input_tx1(socket: socket.socket) -> Input:
     """
-    Gets the currently selected inputs of the switch.
+    Gets the currently selected input for output TX1.
     """
-    return get_command_base(
+    returned_values = get_command_base(
         socket,
         __TARGET_SELECTED_INPUT_TX1,
         __VALUE_PATTERNS_SELECTED_INPUT_TXN,
         __VALUE_CONVERTERS_SELECTED_INPUT_TXN)
+    return returned_values[0]
 
 def set_selected_input_tx0(socket: socket.socket, input: Input) -> None:
     """
-    Sets the currently selected inputs of the switch.
+    Sets the currently selected input for output TX0.
     """
     set_command_base(
         socket,
@@ -104,7 +106,7 @@ def set_selected_input_tx0(socket: socket.socket, input: Input) -> None:
 
 def set_selected_input_tx1(socket: socket.socket, input: Input) -> None:
     """
-    Sets the currently selected inputs of the switch.
+    Sets the currently selected input for output TX1.
     """
     set_command_base(
         socket,
