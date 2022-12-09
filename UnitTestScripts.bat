@@ -2,7 +2,7 @@
 :: UnitTestScripts.bat
 :: 
 :: Author: Vincent Kocks (engineering@vingenuity.net)
-:: v1.2.0
+:: v1.3.0
 ::
 :: Runs unit test scripts for Python projects.
 ::
@@ -10,13 +10,13 @@
 
 
 :: Static Environment Variables
-set PACKAGE_REQUIREMENTS_FILE=%~dp0requirements.txt
 set PROJECT_NAME=VRROOMpy
-set PROJECT_ROOT=.\python
+set PROJECT_ROOT=.
 set COVERAGE_REPORT_PATH=%PROJECT_ROOT%\htmlcov\index.html
 set PYTHON=python
 
 set OPEN_REPORT=True
+rem set SKIP_INSTALL=True
 set VERBOSE=True
 
 
@@ -25,11 +25,17 @@ if defined VERBOSE set VERBOSE_ARG=-v
 
 
 :: Main Execution
+if defined SKIP_INSTALL (
+    echo Skipping installation of required packages due to %%SKIP_INSTALL%% being set.
+    goto :main
+)
 echo Installing required Python packages for %PROJECT_NAME%...
-%PYTHON% -m pip install -r %PACKAGE_REQUIREMENTS_FILE%
+%PYTHON% -m pip install -e .[dev]
 if ERRORLEVEL 1 goto :package_install_error
-echo Installed Python packages successfully.
+echo Installed required packages successfully.
 
+
+:main
 pushd %PROJECT_ROOT%
 echo Linting %PROJECT_NAME% scripts...
 %PYTHON -m black .

@@ -1,5 +1,5 @@
 # VRROOMpy
 
-A simple Python implementation of HDFury's VRROOM IP API.
+Package for controlling HDFury VRROOM HDMI switches via Python.
 
-This may eventually end up being brought into Home Assistant, but for now this is a proof-of-concept.
+For now, only operation mode and input selection are supported; further commands are coming soon.
