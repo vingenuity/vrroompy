@@ -16,7 +16,8 @@ from vrroompy.codec import Codec
 
 QUIT_COMMAND = "quit"
 
-def main(address: str, port:int) -> int:
+
+def main(address: str, port: int) -> int:
     """
     Contains the main functionality of this script.
     """
@@ -31,7 +32,7 @@ def main(address: str, port:int) -> int:
         logger.info("Enter the command '%s' to quit.", QUIT_COMMAND)
 
         command = input("Enter command: ")
-        while(command != QUIT_COMMAND):
+        while command != QUIT_COMMAND:
             logger.debug("Sending command '%s'...", command)
             vrroom_socket.sendall(Codec.encode_command_raw(command))
             response = vrroom_socket.recv(256)
@@ -49,18 +50,22 @@ def parse_arguments(arguments: List[str]) -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description="Controls an HDFury VRROOM HDMI switch via serial socket."
     )
-    parser.add_argument('--address',
-                        '-a',
-                        dest='address',
-                        required=True,
-                        type=str,
-                        help='IP or web address of the switch to connect.')
-    parser.add_argument('--port',
-                        '-p',
-                        dest='port',
-                        required=True,
-                        type=int,
-                        help='Port number of the switch to connect.')
+    parser.add_argument(
+        "--address",
+        "-a",
+        dest="address",
+        required=True,
+        type=str,
+        help="IP or web address of the switch to connect.",
+    )
+    parser.add_argument(
+        "--port",
+        "-p",
+        dest="port",
+        required=True,
+        type=int,
+        help="Port number of the switch to connect.",
+    )
 
     return parser.parse_args(arguments)
 

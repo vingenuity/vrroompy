@@ -31,6 +31,9 @@ if ERRORLEVEL 1 goto :package_install_error
 echo Installed Python packages successfully.
 
 pushd %PROJECT_ROOT%
+echo Linting %PROJECT_NAME% scripts...
+%PYTHON -m black .
+
 echo Testing %PROJECT_NAME% scripts...
 %PYTHON% -m coverage run --branch -m unittest discover %VERBOSE_ARG%
 

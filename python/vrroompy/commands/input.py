@@ -14,6 +14,7 @@ class Input(IntEnum):
     """
     Enumerates the selectable inputs on the VRROOM switch.
     """
+
     RX0 = 0
     RX1 = 1
     RX2 = 2
@@ -35,12 +36,13 @@ class Input(IntEnum):
         """
         Returns a regex pattern that matches values of this enumeration.
         """
-        return "[{0}-{1}]".format(Input.RX0, Input.FOLLOW)
+        return f"[{Input.RX0}-{Input.FOLLOW}]"
 
 
 __TARGET_SELECTED_INPUTS = "insel"
 __VALUE_CONVERTERS_SELECTED_INPUTS = [Input.from_string, Input.from_string]
 __VALUE_PATTERNS_SELECTED_INPUTS = [Input.pattern(), Input.pattern()]
+
 
 def get_selected_inputs(socket: socket.socket) -> List[Input]:
     """
@@ -50,11 +52,13 @@ def get_selected_inputs(socket: socket.socket) -> List[Input]:
         socket,
         __TARGET_SELECTED_INPUTS,
         __VALUE_PATTERNS_SELECTED_INPUTS,
-        __VALUE_CONVERTERS_SELECTED_INPUTS)
+        __VALUE_CONVERTERS_SELECTED_INPUTS,
+    )
 
-def set_selected_inputs(socket: socket.socket, 
-                        input_tx0: Input,
-                        input_tx1: Input) -> None:
+
+def set_selected_inputs(
+    socket: socket.socket, input_tx0: Input, input_tx1: Input
+) -> None:
     """
     Sets the currently selected inputs of the switch.
     """
@@ -63,13 +67,15 @@ def set_selected_inputs(socket: socket.socket,
         __TARGET_SELECTED_INPUTS,
         [input_tx0, input_tx1],
         __VALUE_PATTERNS_SELECTED_INPUTS,
-        __VALUE_CONVERTERS_SELECTED_INPUTS)
+        __VALUE_CONVERTERS_SELECTED_INPUTS,
+    )
 
 
 __TARGET_SELECTED_INPUT_TX0 = "inseltx0"
 __TARGET_SELECTED_INPUT_TX1 = "inseltx1"
 __VALUE_CONVERTERS_SELECTED_INPUT_TXN = [Input.from_string]
 __VALUE_PATTERNS_SELECTED_INPUT_TXN = [Input.pattern()]
+
 
 def get_selected_input_tx0(socket: socket.socket) -> Input:
     """
@@ -79,8 +85,10 @@ def get_selected_input_tx0(socket: socket.socket) -> Input:
         socket,
         __TARGET_SELECTED_INPUT_TX0,
         __VALUE_PATTERNS_SELECTED_INPUT_TXN,
-        __VALUE_CONVERTERS_SELECTED_INPUT_TXN)
+        __VALUE_CONVERTERS_SELECTED_INPUT_TXN,
+    )
     return returned_values[0]
+
 
 def get_selected_input_tx1(socket: socket.socket) -> Input:
     """
@@ -90,8 +98,10 @@ def get_selected_input_tx1(socket: socket.socket) -> Input:
         socket,
         __TARGET_SELECTED_INPUT_TX1,
         __VALUE_PATTERNS_SELECTED_INPUT_TXN,
-        __VALUE_CONVERTERS_SELECTED_INPUT_TXN)
+        __VALUE_CONVERTERS_SELECTED_INPUT_TXN,
+    )
     return returned_values[0]
+
 
 def set_selected_input_tx0(socket: socket.socket, input: Input) -> None:
     """
@@ -102,7 +112,9 @@ def set_selected_input_tx0(socket: socket.socket, input: Input) -> None:
         __TARGET_SELECTED_INPUT_TX0,
         [input],
         __VALUE_PATTERNS_SELECTED_INPUT_TXN,
-        __VALUE_CONVERTERS_SELECTED_INPUT_TXN)
+        __VALUE_CONVERTERS_SELECTED_INPUT_TXN,
+    )
+
 
 def set_selected_input_tx1(socket: socket.socket, input: Input) -> None:
     """
@@ -113,4 +125,5 @@ def set_selected_input_tx1(socket: socket.socket, input: Input) -> None:
         __TARGET_SELECTED_INPUT_TX1,
         [input],
         __VALUE_PATTERNS_SELECTED_INPUT_TXN,
-        __VALUE_CONVERTERS_SELECTED_INPUT_TXN)
+        __VALUE_CONVERTERS_SELECTED_INPUT_TXN,
+    )

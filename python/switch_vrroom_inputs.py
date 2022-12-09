@@ -12,8 +12,7 @@ from typing import List
 from vrroompy.commands.input import *
 
 
-
-def main(address: str, port:int) -> int:
+def main(address: str, port: int) -> int:
     """
     Contains the main functionality of this script.
     """
@@ -33,11 +32,11 @@ def main(address: str, port:int) -> int:
 
         target_output = int(input("Select output to change (0-2, 2 means both): "))
         if (target_output < 0) or (target_output > 2):
-            raise ValueError("Invalid output '{0}' was requested!".format(target_output))
+            raise ValueError(f"Invalid output '{target_output}' was requested!")
 
         target_input_int = int(input("Select input to switch to (0-3): "))
         if (target_input_int < Input.RX0.value) or (target_input_int > Input.RX3.value):
-            raise ValueError("Invalid input '{0}' was requested!".format(target_input_int))
+            raise ValueError(f"Invalid input '{target_input_int}' was requested!")
         target_input = Input(target_input_int)
 
         target_func = None
@@ -46,7 +45,7 @@ def main(address: str, port:int) -> int:
         if target_output == 2:
             target_func = set_selected_inputs
             target_input_values = [target_input, Input.FOLLOW]
-            log_text = "Setting both outputs to input '{0}'...".format(target_input.name)
+            log_text = f"Setting both outputs to input '{target_input.name}'..."
         else:
             output_name = ""
             if target_output == 0:
@@ -56,7 +55,9 @@ def main(address: str, port:int) -> int:
                 output_name = "TX1"
                 target_func = set_selected_input_tx1
             target_input_values = [target_input]
-            log_text = "Setting output '{0}' to input '{1}'...".format(output_name, target_input.name)
+            log_text = (
+                f"Setting output '{output_name}' to input '{target_input.name}'..."
+            )
 
         logger.info(log_text)
         target_func(vrroom_socket, *target_input_values)
@@ -72,18 +73,22 @@ def parse_arguments(arguments: List[str]) -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description="Displays and allows changing of VRROOM inputs."
     )
-    parser.add_argument('--address',
-                        '-a',
-                        dest='address',
-                        required=True,
-                        type=str,
-                        help='IP or web address of the switch to connect.')
-    parser.add_argument('--port',
-                        '-p',
-                        dest='port',
-                        required=True,
-                        type=int,
-                        help='Port number of the switch to connect.')
+    parser.add_argument(
+        "--address",
+        "-a",
+        dest="address",
+        required=True,
+        type=str,
+        help="IP or web address of the switch to connect.",
+    )
+    parser.add_argument(
+        "--port",
+        "-p",
+        dest="port",
+        required=True,
+        type=int,
+        help="Port number of the switch to connect.",
+    )
 
     return parser.parse_args(arguments)
 
