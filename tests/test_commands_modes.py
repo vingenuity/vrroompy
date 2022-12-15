@@ -2,12 +2,12 @@
 # pylint: disable=missing-function-docstring
 
 """
-Contains unit tests for enums & functions within vrroompy.commands.operation_mode.
+Contains unit tests for enums & functions within vrroompy.commands.modes.
 """
 
 import unittest
 from unittest.mock import MagicMock, patch
-from vrroompy.commands.operation_mode import *
+from vrroompy.commands.modes import *
 
 
 class TestOperationMode(unittest.TestCase):
@@ -37,7 +37,7 @@ class TestOperationMode(unittest.TestCase):
 
 class TestOperationModeCommands(unittest.TestCase):
     """
-    Unit tests the free functions for setting operation modes.
+    Unit tests the free functions for getting/setting operation modes.
     """
 
     @patch("socket.socket")
@@ -58,4 +58,30 @@ class TestOperationModeCommands(unittest.TestCase):
 
         set_operation_mode(test_socket, OperationMode.SPLITTER_VRR)
         test_socket.sendall.assert_called_once_with(b"set opmode 0\n")
+        test_socket.recv.assert_called_once()
+
+
+class TestAutoswitchCommands(unittest.TestCase):
+    """
+    Unit tests the free functions for getting/setting autoswitch modes.
+    """
+
+    @patch("socket.socket")
+    def test_get_autoswitch_enabled(self, test_socket):
+        # Simulate successful send and receive on test socket
+        test_socket.sendall = MagicMock(return_value=None)
+        test_socket.recv = MagicMock(return_value=b"autosw off\r\n")
+
+        self.assertEqual(get_autoswitch_enabled(test_socket), False)
+        test_socket.sendall.assert_called_once_with(b"get autosw\n")
+        test_socket.recv.assert_called_once()
+
+    @patch("socket.socket")
+    def test_set_autoswitch_enabled(self, test_socket):
+        # Simulate successful send and receive on test socket
+        test_socket.sendall = MagicMock(return_value=None)
+        test_socket.recv = MagicMock(return_value=b"autosw on\r\n")
+
+        set_autoswitch_enabled(test_socket, True)
+        test_socket.sendall.assert_called_once_with(b"set autosw on\n")
         test_socket.recv.assert_called_once()

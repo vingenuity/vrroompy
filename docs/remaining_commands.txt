@@ -1,9 +1,4 @@
 
-#vrroom set autosw x
-where x is [on / off]
-Enables or disables the autoswitch feature
-Ex. #vrroom set autosw off
-
 #vrroom set edidmode x
 where x is [automix / custom / fixed / copytx0 / copytx1]
 Ex. #vrroom set edidmode automix
