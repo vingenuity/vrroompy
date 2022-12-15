@@ -1,29 +1,3 @@
-#vrroom set ipaddr xxx.xxx.xxx.xxx
-Sets the static IP address. Active when dhcp is turned off.
-Ex. #vrroom set ipaddr 192.168.1.222
-
-#vrroom set ipmask xxx.xxx.xxx.xxx
-Sets the static IP network mask. Active when dhcp is turned off.
-Ex. #vrroom set ipmask 255.255.255.0
-
-#vrroom set ipgw xxx.xxx.xxx.xxx
-Sets the static IP gateway address. Active when dhcp is turned off.
-Ex. #vrroom set ipgw 192.168.1.1
-
-#vrroom set dhcp x
-Set the dynamic or static IP address selection. Dynamic = dhcp on
-where x is [on / off]
-Ex. #vrroom set dhcp off
-
-#vrroom set ipinterrupt x
-where x is [on / off]
-Sets the "int" interrupt message sent to the current open IP connection upon stream change
-Ex. #vrroom set ipinterrupt on
-
-#vrroom set tcpport x
-Set the TCP port to be listened to for commands. Default is 2200
-Requires a reboot to be applied.
-Ex. #vrroom set port 2201
 
 #vrroom set autosw x
 where x is [on / off]
