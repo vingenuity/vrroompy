@@ -39,35 +39,6 @@ class IpAddressV4:
         return "((25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])\.){3}(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])"
 
 
-class TcpPort:
-    """
-    Defines valid TCP ports.
-    """
-
-    def __init__(self, port: int) -> None:
-        self.__port = port
-
-    def __eq__(self, obj: Any) -> bool:
-        return isinstance(obj, TcpPort) and (self.__port == obj.__port)
-
-    def __str__(self) -> str:
-        return str(self.__port)
-
-    @staticmethod
-    def from_string(string: str) -> "TcpPort":
-        """
-        Converts a string into an instance of this class, if valid.
-        """
-        return TcpPort(int(string))
-
-    @staticmethod
-    def pattern() -> str:
-        """
-        Returns a valid regex pattern for this class.
-        """
-        return "([1-9][0-9]{0,3}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])"
-
-
 __TARGET_IP_ADDRESS = "ipaddr"
 __VALUE_CONVERTERS_IP_ADDRESS = [IpAddressV4.from_string]
 __VALUE_PATTERNS_IP_ADDRESS = [IpAddressV4.pattern()]
@@ -162,7 +133,7 @@ __VALUE_CONVERTERS_ONOFF = [OnOffSwitch.from_string]
 __VALUE_PATTERNS_ONOFF = [OnOffSwitch.pattern()]
 
 
-def get_dhcp_enabled(socket: socket) -> OnOffSwitch:
+def get_dhcp_enabled(socket: socket) -> bool:
     """
     Gets whether DHCP is enabled on the switch.
     """
@@ -172,17 +143,17 @@ def get_dhcp_enabled(socket: socket) -> OnOffSwitch:
         __VALUE_PATTERNS_ONOFF,
         __VALUE_CONVERTERS_ONOFF,
     )
-    return returned_values[0]
+    return OnOffSwitch.to_bool(returned_values[0])
 
 
-def set_dhcp_enabled(socket: socket, on_off: OnOffSwitch) -> None:
+def set_dhcp_enabled(socket: socket, enabled: bool) -> None:
     """
     Enables/disables DHCP on the switch.
     """
     set_command_base(
         socket,
         __TARGET_DHCP_ONOFF,
-        [on_off],
+        [OnOffSwitch.from_bool(enabled)],
         __VALUE_PATTERNS_ONOFF,
         __VALUE_CONVERTERS_ONOFF,
     )
@@ -191,7 +162,7 @@ def set_dhcp_enabled(socket: socket, on_off: OnOffSwitch) -> None:
 __TARGET_IP_INTERRUPT_ONOFF = "ipinterrupt"
 
 
-def get_ip_interrupts_enabled(socket: socket) -> OnOffSwitch:
+def get_ip_interrupts_enabled(socket: socket) -> bool:
     """
     Gets whether IP interrupts are enabled on the switch.
     """
@@ -201,20 +172,49 @@ def get_ip_interrupts_enabled(socket: socket) -> OnOffSwitch:
         __VALUE_PATTERNS_ONOFF,
         __VALUE_CONVERTERS_ONOFF,
     )
-    return returned_values[0]
+    return OnOffSwitch.to_bool(returned_values[0])
 
 
-def set_ip_interrupts_enabled(socket: socket, on_off: OnOffSwitch) -> None:
+def set_ip_interrupts_enabled(socket: socket, enabled: bool) -> None:
     """
     Enables/disables IP interrupts on the switch.
     """
     set_command_base(
         socket,
         __TARGET_IP_INTERRUPT_ONOFF,
-        [on_off],
+        [OnOffSwitch.from_bool(enabled)],
         __VALUE_PATTERNS_ONOFF,
         __VALUE_CONVERTERS_ONOFF,
     )
+
+
+class TcpPort:
+    """
+    Defines valid TCP ports.
+    """
+
+    def __init__(self, port: int) -> None:
+        self.__port = port
+
+    def __eq__(self, obj: Any) -> bool:
+        return isinstance(obj, TcpPort) and (self.__port == obj.__port)
+
+    def __str__(self) -> str:
+        return str(self.__port)
+
+    @staticmethod
+    def from_string(string: str) -> "TcpPort":
+        """
+        Converts a string into an instance of this class, if valid.
+        """
+        return TcpPort(int(string))
+
+    @staticmethod
+    def pattern() -> str:
+        """
+        Returns a valid regex pattern for this class.
+        """
+        return "([1-9][0-9]{0,3}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])"
 
 
 __TARGET_TCP_PORT = "tcpport"

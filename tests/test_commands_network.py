@@ -128,7 +128,7 @@ class TestIpOnOffCommands(unittest.TestCase):
         test_socket.sendall = MagicMock(return_value=None)
         test_socket.recv = MagicMock(return_value=b"dhcp off\r\n")
 
-        self.assertEqual(get_dhcp_enabled(test_socket), OnOffSwitch.OFF)
+        self.assertEqual(get_dhcp_enabled(test_socket), False)
         test_socket.sendall.assert_called_once_with(b"get dhcp\n")
         test_socket.recv.assert_called_once()
 
@@ -138,7 +138,7 @@ class TestIpOnOffCommands(unittest.TestCase):
         test_socket.sendall = MagicMock(return_value=None)
         test_socket.recv = MagicMock(return_value=b"dhcp on\r\n")
 
-        set_dhcp_enabled(test_socket, OnOffSwitch.ON)
+        set_dhcp_enabled(test_socket, True)
         test_socket.sendall.assert_called_once_with(b"set dhcp on\n")
         test_socket.recv.assert_called_once()
 
@@ -148,7 +148,7 @@ class TestIpOnOffCommands(unittest.TestCase):
         test_socket.sendall = MagicMock(return_value=None)
         test_socket.recv = MagicMock(return_value=b"ipinterrupt off\r\n")
 
-        self.assertEqual(get_ip_interrupts_enabled(test_socket), OnOffSwitch.OFF)
+        self.assertEqual(get_ip_interrupts_enabled(test_socket), False)
         test_socket.sendall.assert_called_once_with(b"get ipinterrupt\n")
         test_socket.recv.assert_called_once()
 
@@ -158,7 +158,7 @@ class TestIpOnOffCommands(unittest.TestCase):
         test_socket.sendall = MagicMock(return_value=None)
         test_socket.recv = MagicMock(return_value=b"ipinterrupt on\r\n")
 
-        set_ip_interrupts_enabled(test_socket, OnOffSwitch.ON)
+        set_ip_interrupts_enabled(test_socket, True)
         test_socket.sendall.assert_called_once_with(b"set ipinterrupt on\n")
         test_socket.recv.assert_called_once()
 
