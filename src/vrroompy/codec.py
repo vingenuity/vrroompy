@@ -48,7 +48,8 @@ class Codec:
 
         Returns a string with the terminators removed.
         """
-        return response.decode()[:-2]
+        # Match responses ending in newline, regardless of carriage return beforehand
+        return re.match("([^\r\n]*)\r?\n", response.decode()).group(1)
 
     @staticmethod
     def encode_command_get(target: str) -> ByteString:

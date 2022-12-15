@@ -37,11 +37,19 @@ class TestCodec(unittest.TestCase):
             Codec.decode_response(b"opmode 5\r\n", "opmode", ["[0-4]"], [str])
 
     def test_decode_raw(self):
+        # With both carriage return and newline
         decoded_response = Codec.decode_response_raw(b"opmode 4\r\n")
         self.assertEqual(decoded_response, "opmode 4")
 
         decoded_response = Codec.decode_response_raw(b"insel 3 0\r\n")
         self.assertEqual(decoded_response, "insel 3 0")
+
+        # With newline only
+        decoded_response = Codec.decode_response_raw(b"opmode 2\n")
+        self.assertEqual(decoded_response, "opmode 2")
+
+        decoded_response = Codec.decode_response_raw(b"insel 1 4\n")
+        self.assertEqual(decoded_response, "insel 1 4")
 
     def test_encode_get(self):
         encoded_command = Codec.encode_command_get("opmode")
