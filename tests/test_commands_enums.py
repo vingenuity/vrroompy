@@ -35,3 +35,22 @@ class TestOnOffSwitch(unittest.TestCase):
     def test_to_bool(self):
         self.assertEqual(OnOffSwitch.to_bool(OnOffSwitch.OFF), False)
         self.assertEqual(OnOffSwitch.to_bool(OnOffSwitch.ON), True)
+
+
+class TestTarget(unittest.TestCase):
+    """
+    Unit tests the Target enumeration.
+    """
+
+    def test_str(self):
+        self.assertEqual(str(Target.SELECTED_INPUT_TX0), "inseltx0")
+        self.assertEqual(str(Target.CEC), "cec")
+
+    def test_from_string(self):
+        self.assertEqual(Target.from_string("opmode"), Target.OPERATION_MODE)
+        self.assertEqual(Target.from_string("reboot"), Target.ACTION_REBOOT)
+
+    def test_is_valid(self):
+        self.assertEqual(Target.is_valid("ipaddr"), True)
+        self.assertEqual(Target.is_valid("edidmode"), True)
+        self.assertEqual(Target.is_valid("invalid"), False)

@@ -8,6 +8,7 @@ from enum import IntEnum
 import socket
 from typing import List
 from . import get_command_base, set_command_base
+from .enums import Target
 
 
 class Input(IntEnum):
@@ -39,7 +40,6 @@ class Input(IntEnum):
         return f"[{Input.RX0}-{Input.FOLLOW}]"
 
 
-__TARGET_SELECTED_INPUTS = "insel"
 __VALUE_CONVERTERS_SELECTED_INPUTS = [Input.from_string, Input.from_string]
 __VALUE_PATTERNS_SELECTED_INPUTS = [Input.pattern(), Input.pattern()]
 
@@ -50,7 +50,7 @@ def get_selected_inputs(socket: socket.socket) -> List[Input]:
     """
     return get_command_base(
         socket,
-        __TARGET_SELECTED_INPUTS,
+        Target.SELECTED_INPUTS,
         __VALUE_PATTERNS_SELECTED_INPUTS,
         __VALUE_CONVERTERS_SELECTED_INPUTS,
     )
@@ -64,15 +64,13 @@ def set_selected_inputs(
     """
     set_command_base(
         socket,
-        __TARGET_SELECTED_INPUTS,
+        Target.SELECTED_INPUTS,
         [input_tx0, input_tx1],
         __VALUE_PATTERNS_SELECTED_INPUTS,
         __VALUE_CONVERTERS_SELECTED_INPUTS,
     )
 
 
-__TARGET_SELECTED_INPUT_TX0 = "inseltx0"
-__TARGET_SELECTED_INPUT_TX1 = "inseltx1"
 __VALUE_CONVERTERS_SELECTED_INPUT_TXN = [Input.from_string]
 __VALUE_PATTERNS_SELECTED_INPUT_TXN = [Input.pattern()]
 
@@ -83,7 +81,7 @@ def get_selected_input_tx0(socket: socket.socket) -> Input:
     """
     returned_values = get_command_base(
         socket,
-        __TARGET_SELECTED_INPUT_TX0,
+        Target.SELECTED_INPUT_TX0,
         __VALUE_PATTERNS_SELECTED_INPUT_TXN,
         __VALUE_CONVERTERS_SELECTED_INPUT_TXN,
     )
@@ -96,7 +94,7 @@ def get_selected_input_tx1(socket: socket.socket) -> Input:
     """
     returned_values = get_command_base(
         socket,
-        __TARGET_SELECTED_INPUT_TX1,
+        Target.SELECTED_INPUT_TX1,
         __VALUE_PATTERNS_SELECTED_INPUT_TXN,
         __VALUE_CONVERTERS_SELECTED_INPUT_TXN,
     )
@@ -109,7 +107,7 @@ def set_selected_input_tx0(socket: socket.socket, input: Input) -> None:
     """
     set_command_base(
         socket,
-        __TARGET_SELECTED_INPUT_TX0,
+        Target.SELECTED_INPUT_TX0,
         [input],
         __VALUE_PATTERNS_SELECTED_INPUT_TXN,
         __VALUE_CONVERTERS_SELECTED_INPUT_TXN,
@@ -122,7 +120,7 @@ def set_selected_input_tx1(socket: socket.socket, input: Input) -> None:
     """
     set_command_base(
         socket,
-        __TARGET_SELECTED_INPUT_TX1,
+        Target.SELECTED_INPUT_TX1,
         [input],
         __VALUE_PATTERNS_SELECTED_INPUT_TXN,
         __VALUE_CONVERTERS_SELECTED_INPUT_TXN,

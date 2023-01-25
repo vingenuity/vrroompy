@@ -7,7 +7,7 @@ Contains free functions for getting/setting VRROOM network settings.
 import socket
 from typing import Any
 from . import get_command_base, set_command_base
-from .enums import OnOffSwitch
+from .enums import OnOffSwitch, Target
 
 
 class IpAddressV4:
@@ -39,7 +39,6 @@ class IpAddressV4:
         return "((25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])\.){3}(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])"
 
 
-__TARGET_IP_ADDRESS = "ipaddr"
 __VALUE_CONVERTERS_IP_ADDRESS = [IpAddressV4.from_string]
 __VALUE_PATTERNS_IP_ADDRESS = [IpAddressV4.pattern()]
 
@@ -50,7 +49,7 @@ def get_ip_address(socket: socket) -> IpAddressV4:
     """
     returned_values = get_command_base(
         socket,
-        __TARGET_IP_ADDRESS,
+        Target.IP_ADDRESS,
         __VALUE_PATTERNS_IP_ADDRESS,
         __VALUE_CONVERTERS_IP_ADDRESS,
     )
@@ -63,14 +62,11 @@ def set_ip_address(socket: socket, address: IpAddressV4) -> None:
     """
     set_command_base(
         socket,
-        __TARGET_IP_ADDRESS,
+        Target.IP_ADDRESS,
         [address],
         __VALUE_PATTERNS_IP_ADDRESS,
         __VALUE_CONVERTERS_IP_ADDRESS,
     )
-
-
-__TARGET_IP_NETWORK_MASK = "ipmask"
 
 
 def get_ip_network_mask(socket: socket) -> IpAddressV4:
@@ -79,7 +75,7 @@ def get_ip_network_mask(socket: socket) -> IpAddressV4:
     """
     returned_values = get_command_base(
         socket,
-        __TARGET_IP_NETWORK_MASK,
+        Target.IP_NETWORK_MASK,
         __VALUE_PATTERNS_IP_ADDRESS,
         __VALUE_CONVERTERS_IP_ADDRESS,
     )
@@ -92,14 +88,11 @@ def set_ip_network_mask(socket: socket, address: IpAddressV4) -> None:
     """
     set_command_base(
         socket,
-        __TARGET_IP_NETWORK_MASK,
+        Target.IP_NETWORK_MASK,
         [address],
         __VALUE_PATTERNS_IP_ADDRESS,
         __VALUE_CONVERTERS_IP_ADDRESS,
     )
-
-
-__TARGET_IP_GATEWAY = "ipgw"
 
 
 def get_ip_gateway(socket: socket) -> IpAddressV4:
@@ -108,7 +101,7 @@ def get_ip_gateway(socket: socket) -> IpAddressV4:
     """
     returned_values = get_command_base(
         socket,
-        __TARGET_IP_GATEWAY,
+        Target.IP_GATEWAY,
         __VALUE_PATTERNS_IP_ADDRESS,
         __VALUE_CONVERTERS_IP_ADDRESS,
     )
@@ -121,14 +114,13 @@ def set_ip_gateway(socket: socket, address: IpAddressV4) -> None:
     """
     set_command_base(
         socket,
-        __TARGET_IP_GATEWAY,
+        Target.IP_GATEWAY,
         [address],
         __VALUE_PATTERNS_IP_ADDRESS,
         __VALUE_CONVERTERS_IP_ADDRESS,
     )
 
 
-__TARGET_DHCP_ONOFF = "dhcp"
 __VALUE_CONVERTERS_ONOFF = [OnOffSwitch.from_string]
 __VALUE_PATTERNS_ONOFF = [OnOffSwitch.pattern()]
 
@@ -139,7 +131,7 @@ def get_dhcp_enabled(socket: socket) -> bool:
     """
     returned_values = get_command_base(
         socket,
-        __TARGET_DHCP_ONOFF,
+        Target.DHCP_ENABLED,
         __VALUE_PATTERNS_ONOFF,
         __VALUE_CONVERTERS_ONOFF,
     )
@@ -152,14 +144,11 @@ def set_dhcp_enabled(socket: socket, enabled: bool) -> None:
     """
     set_command_base(
         socket,
-        __TARGET_DHCP_ONOFF,
+        Target.DHCP_ENABLED,
         [OnOffSwitch.from_bool(enabled)],
         __VALUE_PATTERNS_ONOFF,
         __VALUE_CONVERTERS_ONOFF,
     )
-
-
-__TARGET_IP_INTERRUPT_ONOFF = "ipinterrupt"
 
 
 def get_ip_interrupts_enabled(socket: socket) -> bool:
@@ -168,7 +157,7 @@ def get_ip_interrupts_enabled(socket: socket) -> bool:
     """
     returned_values = get_command_base(
         socket,
-        __TARGET_IP_INTERRUPT_ONOFF,
+        Target.IP_INTERRUPTS_ENABLED,
         __VALUE_PATTERNS_ONOFF,
         __VALUE_CONVERTERS_ONOFF,
     )
@@ -181,7 +170,7 @@ def set_ip_interrupts_enabled(socket: socket, enabled: bool) -> None:
     """
     set_command_base(
         socket,
-        __TARGET_IP_INTERRUPT_ONOFF,
+        Target.IP_INTERRUPTS_ENABLED,
         [OnOffSwitch.from_bool(enabled)],
         __VALUE_PATTERNS_ONOFF,
         __VALUE_CONVERTERS_ONOFF,
@@ -217,7 +206,6 @@ class TcpPort:
         return "([1-9][0-9]{0,3}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])"
 
 
-__TARGET_TCP_PORT = "tcpport"
 __VALUE_CONVERTERS_TCP_PORT = [TcpPort.from_string]
 __VALUE_PATTERNS_TCP_PORT = [TcpPort.pattern()]
 
@@ -228,7 +216,7 @@ def get_tcp_port(socket: socket) -> TcpPort:
     """
     returned_values = get_command_base(
         socket,
-        __TARGET_TCP_PORT,
+        Target.TCP_PORT,
         __VALUE_PATTERNS_TCP_PORT,
         __VALUE_CONVERTERS_TCP_PORT,
     )
@@ -241,7 +229,7 @@ def set_tcp_port(socket: socket, port: TcpPort) -> None:
     """
     set_command_base(
         socket,
-        __TARGET_TCP_PORT,
+        Target.TCP_PORT,
         [port],
         __VALUE_PATTERNS_TCP_PORT,
         __VALUE_CONVERTERS_TCP_PORT,

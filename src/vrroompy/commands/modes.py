@@ -7,7 +7,7 @@ Contains free functions for getting/setting various VRROOM modes.
 from enum import IntEnum
 import socket
 from . import get_command_base, set_command_base
-from .enums import OnOffSwitch
+from .enums import OnOffSwitch, Target
 
 
 class OperationMode(IntEnum):
@@ -39,7 +39,6 @@ class OperationMode(IntEnum):
         return f"[{OperationMode.SPLITTER_VRR}-{OperationMode.MATRIX_FRL5_TMDS}]"
 
 
-__TARGET_MODE_OPERATION = "opmode"
 __VALUE_CONVERTERS_MODE_OPERATION = [OperationMode.from_string]
 __VALUE_PATTERNS_MODE_OPERATION = [OperationMode.pattern()]
 
@@ -50,7 +49,7 @@ def get_operation_mode(socket: socket) -> OperationMode:
     """
     returned_values = get_command_base(
         socket,
-        __TARGET_MODE_OPERATION,
+        Target.OPERATION_MODE,
         __VALUE_PATTERNS_MODE_OPERATION,
         __VALUE_CONVERTERS_MODE_OPERATION,
     )
@@ -63,14 +62,13 @@ def set_operation_mode(socket: socket, op_mode: OperationMode) -> None:
     """
     set_command_base(
         socket,
-        __TARGET_MODE_OPERATION,
+        Target.OPERATION_MODE,
         [op_mode],
         __VALUE_PATTERNS_MODE_OPERATION,
         __VALUE_CONVERTERS_MODE_OPERATION,
     )
 
 
-__TARGET_MODE_AUTOSWITCH = "autosw"
 __VALUE_CONVERTERS_MODE_AUTOSWITCH = [OnOffSwitch.from_string]
 __VALUE_PATTERNS_MODE_AUTOSWITCH = [OnOffSwitch.pattern()]
 
@@ -81,7 +79,7 @@ def get_autoswitch_enabled(socket: socket) -> bool:
     """
     returned_values = get_command_base(
         socket,
-        __TARGET_MODE_AUTOSWITCH,
+        Target.AUTO_SWITCHING,
         __VALUE_PATTERNS_MODE_AUTOSWITCH,
         __VALUE_CONVERTERS_MODE_AUTOSWITCH,
     )
@@ -94,7 +92,7 @@ def set_autoswitch_enabled(socket: socket, enabled: bool) -> None:
     """
     set_command_base(
         socket,
-        __TARGET_MODE_AUTOSWITCH,
+        Target.AUTO_SWITCHING,
         [OnOffSwitch.from_bool(enabled)],
         __VALUE_PATTERNS_MODE_AUTOSWITCH,
         __VALUE_CONVERTERS_MODE_AUTOSWITCH,
