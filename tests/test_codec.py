@@ -33,12 +33,19 @@ class TestCodec(unittest.TestCase):
         self.assertEqual(decoded_response, [Input.RX0, Input.FOLLOW])
 
     def test_decode_response_raises(self):
+        # Asserts when value pattern and converter lengths do not match
+        with self.assertRaises(ValueError):
+            Codec.decode_response(b"reboot\r\n", "reboot", [""], [])
+
         # Asserts when value pattern does not match response
         with self.assertRaises(ResponseParsingError):
             Codec.decode_response(b"opmode 5\r\n", "opmode", ["[0-4]"], [str])
 
     def test_decode_raw(self):
         # With both carriage return and newline
+        decoded_response = Codec.decode_response_raw(b"reboot\r\n")
+        self.assertEqual(decoded_response, "reboot")
+
         decoded_response = Codec.decode_response_raw(b"opmode 4\r\n")
         self.assertEqual(decoded_response, "opmode 4")
 
@@ -46,6 +53,9 @@ class TestCodec(unittest.TestCase):
         self.assertEqual(decoded_response, "insel 3 0")
 
         # With newline only
+        decoded_response = Codec.decode_response_raw(b"reboot\n")
+        self.assertEqual(decoded_response, "reboot")
+
         decoded_response = Codec.decode_response_raw(b"opmode 2\n")
         self.assertEqual(decoded_response, "opmode 2")
 
@@ -66,6 +76,14 @@ class TestCodec(unittest.TestCase):
         self.assertEqual(encoded_command, b"set insel 2 4\n")
 
     def test_encode_set(self):
+        # Zero values, None version
+        encoded_command = Codec.encode_command_set("reboot", None)
+        self.assertEqual(encoded_command, b"set reboot\n")
+
+        # Zero values, empty version
+        encoded_command = Codec.encode_command_set("reboot", [])
+        self.assertEqual(encoded_command, b"set reboot\n")
+
         # Single value, str type
         encoded_command = Codec.encode_command_set("opmode", ["2"])
         self.assertEqual(encoded_command, b"set opmode 2\n")

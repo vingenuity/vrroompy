@@ -293,16 +293,6 @@ where x is [-10 to +10]
 Sets the analog L/R audio jack output treble level in dB.
 Ex. #vrroom set analogtreble -2 
 
-#vrroom set reboot
-Reboots the unit, does not clear any settings
-
-#vrroom set factoryreset x
-where x is [1, 2, 3]
-1 = Erase all settings but retain the custom EDID tables
-2 = Erase custom EDID tables but retain other settings
-3 = ERASE all settings and EDID tables
-Ex. #vrroom set factoryreset 3 
-
 #vrroom set jvcmacro x
 where x is [on / off]
 Enables / disables JVC macro sending
@@ -386,8 +376,6 @@ Returns the audio mode LPCM / bitstream from the selected input
 #vrroom get edidtable x
 where x is [rx0, rx1, rx2, rx3, tx0, tx1] 
 Returns the current 256-byte EDID table of the corresponding port
-
-#vrroom set hotplug	Issue hotplug event to the sources
 
 
 #################################################################

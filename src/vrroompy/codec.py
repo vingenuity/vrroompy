@@ -25,24 +25,38 @@ class Codec:
         value_converters: List[Callable],
     ) -> List[Any]:
         """
-        Decodes a raw bytestring respons from the VRROOM switch.
+        Decodes a response from the VRROOM switch.
 
-        Returns a string with the terminators removed.
+        Returns None if there are no value patterns and converters passed.
+        Returns a list of values equal to the number of patterns and converters otherwise.
+
         Raises ResponseParsingError if the response is unable to be parsed.
+        Raises ValueError if the value pattern and converter lists are not the same length.
         """
-        response_raw = Codec.decode_response_raw(response)
+        if len(value_patterns) != len(value_converters):
+            raise ValueError(
+                f"Unequal value pattern and converter arrays were passed to decoding!"
+            )
+        # Now that we know the value lengths are equal, we only have to check one list
+        response_has_values = bool(value_patterns)  # Returns false if null or empty
 
-        values_pattern = " ".join(value_patterns)
-        response_pattern = f"{target} (?P<values>{values_pattern})"
+        response_raw = Codec.decode_response_raw(response)
+        response_pattern = f"{target}"
+        if response_has_values:
+            values_pattern = " ".join(value_patterns)
+            response_pattern += f" (?P<values>{values_pattern})"
         response_match = re.match(response_pattern, response_raw)
         if response_match is None:
             raise ResponseParsingError(
                 f"Unable to parse response '{response}' from VRROOM command!"
             )
 
-        response_value_strs = response_match.groupdict()["values"].split(" ")
-        converter_response_pairs = zip(value_converters, response_value_strs)
-        return [converter(value) for converter, value in converter_response_pairs]
+        if response_has_values:
+            response_value_strs = response_match.groupdict()["values"].split(" ")
+            converter_response_pairs = zip(value_converters, response_value_strs)
+            return [converter(value) for converter, value in converter_response_pairs]
+        else:
+            return []
 
     @staticmethod
     def decode_response_raw(response: ByteString) -> str:
@@ -83,7 +97,9 @@ class Codec:
 
         Returns the bytestring for the command.
         """
-        values_str = " ".join([str(val) for val in values])
-        raw_command = f"set {target} {values_str}"
+        raw_command = f"set {target}"
+        if values:
+            values_str = " ".join([str(val) for val in values])
+            raw_command += f" {values_str}"
 
         return Codec.encode_command_raw(raw_command)

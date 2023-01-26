@@ -17,6 +17,19 @@ class TestBaseCommands(unittest.TestCase):
     Unit tests the base command free functions.
     """
 
+    # A command of this form is likely never to occur, but let's be prepared
+    @patch("socket.socket")
+    def test_get_command_base_none(self, test_socket):
+        # Simulate successful send and receive on test socket
+        test_socket.sendall = MagicMock(return_value=None)
+        test_socket.recv = MagicMock(return_value=b"hotplug\r\n")
+
+        command_output = get_command_base(test_socket, "hotplug", [], [])
+
+        test_socket.sendall.assert_called_once_with(b"get hotplug\n")
+        test_socket.recv.assert_called_once()
+        self.assertEqual(command_output, [])
+
     @patch("socket.socket")
     def test_get_command_base_str(self, test_socket):
         # Simulate successful send and receive on test socket
@@ -86,6 +99,23 @@ class TestBaseCommands(unittest.TestCase):
         )
 
         test_socket.sendall.assert_called_once_with(b"set insel 0 4\n")
+        test_socket.recv.assert_called_once()
+
+    @patch("socket.socket")
+    def test_set_command_base_output_none(self, test_socket):
+        # Simulate successful send and receive on test socket
+        test_socket.sendall = MagicMock(return_value=None)
+        test_socket.recv = MagicMock(return_value=b"reboot\r\n")
+
+        set_command_base(
+            test_socket,
+            "reboot",
+            [],
+            [],
+            [],
+        )
+
+        test_socket.sendall.assert_called_once_with(b"set reboot\n")
         test_socket.recv.assert_called_once()
 
     @patch("socket.socket")
