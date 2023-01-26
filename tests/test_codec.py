@@ -8,6 +8,7 @@ Contains unit tests for the module vrroompy.codec.
 import unittest
 from vrroompy.codec import Codec
 from vrroompy.commands.input import Input
+from vrroompy.exceptions import ResponseParsingError
 
 
 class TestCodec(unittest.TestCase):
@@ -33,7 +34,7 @@ class TestCodec(unittest.TestCase):
 
     def test_decode_response_raises(self):
         # Asserts when value pattern does not match response
-        with self.assertRaises(ValueError):
+        with self.assertRaises(ResponseParsingError):
             Codec.decode_response(b"opmode 5\r\n", "opmode", ["[0-4]"], [str])
 
     def test_decode_raw(self):

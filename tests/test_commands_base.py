@@ -9,6 +9,7 @@ import unittest
 from unittest.mock import MagicMock, patch
 from vrroompy.commands import get_command_base, set_command_base
 from vrroompy.commands.input import Input
+from vrroompy.exceptions import InvalidTargetError, ValueNotChangedError
 
 
 class TestBaseCommands(unittest.TestCase):
@@ -46,6 +47,20 @@ class TestBaseCommands(unittest.TestCase):
         self.assertEqual(command_output, [Input.RX2, Input.RX0])
 
     @patch("socket.socket")
+    def test_get_command_base_raises(self, test_socket):
+        with self.assertRaises(InvalidTargetError):
+            # Simulate successful send, (response won't occur)
+            test_socket.sendall = MagicMock(return_value=None)
+            test_socket.recv = MagicMock(return_value=b"\r\n")
+
+            get_command_base(
+                test_socket,
+                "invalid",
+                [Input.pattern()],
+                [Input.from_string],
+            )
+
+    @patch("socket.socket")
     def test_set_command_base_output_str(self, test_socket):
         # Simulate successful send and receive on test socket
         test_socket.sendall = MagicMock(return_value=None)
@@ -75,7 +90,20 @@ class TestBaseCommands(unittest.TestCase):
 
     @patch("socket.socket")
     def test_set_command_base_raises(self, test_socket):
-        with self.assertRaises(ValueError):
+        with self.assertRaises(InvalidTargetError):
+            # Simulate successful send, (response won't occur)
+            test_socket.sendall = MagicMock(return_value=None)
+            test_socket.recv = MagicMock(return_value=b"\r\n")
+
+            set_command_base(
+                test_socket,
+                "invalid",
+                [Input.RX0],
+                [Input.pattern()],
+                [Input.from_string],
+            )
+
+        with self.assertRaises(ValueNotChangedError):
             # Simulate successful send, but with unexpected response
             test_socket.sendall = MagicMock(return_value=None)
             test_socket.recv = MagicMock(return_value=b"insel 0 2\r\n")

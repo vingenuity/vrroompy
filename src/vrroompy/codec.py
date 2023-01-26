@@ -7,6 +7,8 @@ Contains class to encode/decode VRROOM commands for socket recv/send.
 import re
 from typing import Any, ByteString, Callable, List
 
+from .exceptions import ResponseParsingError
+
 
 class Codec:
     """
@@ -26,6 +28,7 @@ class Codec:
         Decodes a raw bytestring respons from the VRROOM switch.
 
         Returns a string with the terminators removed.
+        Raises ResponseParsingError if the response is unable to be parsed.
         """
         response_raw = Codec.decode_response_raw(response)
 
@@ -33,7 +36,7 @@ class Codec:
         response_pattern = f"{target} (?P<values>{values_pattern})"
         response_match = re.match(response_pattern, response_raw)
         if response_match is None:
-            raise ValueError(
+            raise ResponseParsingError(
                 f"Unable to parse response '{response}' from VRROOM command!"
             )
 
