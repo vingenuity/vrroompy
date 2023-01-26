@@ -18,6 +18,7 @@ from vrroompy.commands.network import (
     get_dhcp_enabled,
     get_ip_interrupts_enabled,
     get_tcp_port,
+    get_mac_address,
 )
 from vrroompy.commands.modes import get_operation_mode, get_autoswitch_enabled
 
@@ -52,6 +53,7 @@ def main(address: str, port: int) -> int:
             OnOffSwitch.from_bool(get_ip_interrupts_enabled(vrroom_socket)),
         )
         logger.info("TCP Port: %s", get_tcp_port(vrroom_socket))
+        logger.info("MAC Address: %s", get_mac_address(vrroom_socket))
         logger.info(
             "Autoswitch mode: %s",
             OnOffSwitch.from_bool(get_autoswitch_enabled(vrroom_socket)),

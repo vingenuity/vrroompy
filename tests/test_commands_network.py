@@ -33,7 +33,7 @@ class TestIpAddressV4(unittest.TestCase):
 
 class TestTcpPort(unittest.TestCase):
     """
-    Unit tests the TcpPort enumeration.
+    Unit tests the TcpPort class.
     """
 
     def test_str(self):
@@ -49,6 +49,29 @@ class TestTcpPort(unittest.TestCase):
         self.assertIsNone(fullmatch(TcpPort.pattern(), "65536"))
         self.assertIsNone(fullmatch(TcpPort.pattern(), "99999"))
         self.assertIsNone(fullmatch(TcpPort.pattern(), "655350"))
+
+
+class TestMacAddress(unittest.TestCase):
+    """
+    Unit tests the MacAddress class.
+    """
+
+    def test_str(self):
+        self.assertEqual(str(MacAddress("19:AC:B5:D3:22:F4")), "19:AC:B5:D3:22:F4")
+
+    def test_from_string(self):
+        self.assertEqual(MacAddress.from_string("19:AC:B5:D3:22:F4"), MacAddress("19:AC:B5:D3:22:F4"))
+
+    def test_pattern(self):
+        # Pattern also allows for hyphenated form, even though it's not what the VRROOM sends.
+        self.assertIsNotNone(fullmatch(MacAddress.pattern(), "19:AC:B5:D3:22:F4"))
+        self.assertIsNotNone(fullmatch(MacAddress.pattern(), "19-AC-B5-D3-22-F4"))
+        # Verify that the length must be correct
+        self.assertIsNone(fullmatch(MacAddress.pattern(), "19:AC:B5:D3:22"))
+        self.assertIsNone(fullmatch(MacAddress.pattern(), "19:AC:B5:D3:22:F4:BB"))
+        # Verify that each section must be exactly two hexadecimal numbers
+        self.assertIsNone(fullmatch(MacAddress.pattern(), "19:AC:B5:D3D:22:F4:BB"))
+        self.assertIsNone(fullmatch(MacAddress.pattern(), "1:AC:B5:D3:22:F4:BB"))
 
 
 class TestIpCommands(unittest.TestCase):
@@ -186,4 +209,20 @@ class TestTcpPortCommand(unittest.TestCase):
 
         set_tcp_port(test_socket, TcpPort(80))
         test_socket.sendall.assert_called_once_with(b"set tcpport 80\n")
+        test_socket.recv.assert_called_once()
+
+
+class TestMacAddressCommand(unittest.TestCase):
+    """
+    Unit tests the free function for MAC addresses.
+    """
+
+    @patch("socket.socket")
+    def test_get_mac_address(self, test_socket):
+        # Simulate successful send and receive on test socket
+        test_socket.sendall = MagicMock(return_value=None)
+        test_socket.recv = MagicMock(return_value=b"mac 19:AC:B5:D3:22:F4\r\n")
+
+        self.assertEqual(get_mac_address(test_socket), MacAddress("19:AC:B5:D3:22:F4"))
+        test_socket.sendall.assert_called_once_with(b"get mac\n")
         test_socket.recv.assert_called_once()

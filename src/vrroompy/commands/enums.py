@@ -73,6 +73,7 @@ class Target(Enum):
     DHCP_ENABLED = "dhcp"
     IP_INTERRUPTS_ENABLED = "ipinterrupt"
     TCP_PORT = "tcpport"
+    MAC_ADDRESS = "mac"
 
     # Modes
     AUTO_SWITCHING = "autosw"

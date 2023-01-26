@@ -234,3 +234,49 @@ def set_tcp_port(socket: socket, port: TcpPort) -> None:
         __VALUE_PATTERNS_TCP_PORT,
         __VALUE_CONVERTERS_TCP_PORT,
     )
+
+
+class MacAddress:
+    """
+    Defines valid MAC addresses.
+    """
+
+    def __init__(self, mac: str) -> None:
+        self.__mac = mac
+
+    def __eq__(self, obj: Any) -> bool:
+        return isinstance(obj, MacAddress) and (self.__mac == obj.__mac)
+
+    def __str__(self) -> str:
+        return str(self.__mac)
+
+    @staticmethod
+    def from_string(string: str) -> "MacAddress":
+        """
+        Converts a string into an instance of this class, if valid.
+        """
+        return MacAddress(string)
+
+    @staticmethod
+    def pattern() -> str:
+        """
+        Returns a valid regex pattern for this class.
+        """
+        return "([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})"
+
+
+__VALUE_CONVERTERS_MAC_ADDRESS = [MacAddress.from_string]
+__VALUE_PATTERNS_MAC_ADDRESS = [MacAddress.pattern()]
+
+
+def get_mac_address(socket: socket) -> MacAddress:
+    """
+    Gets the MAC address of the switch.
+    """
+    returned_values = get_command_base(
+        socket,
+        Target.MAC_ADDRESS,
+        __VALUE_PATTERNS_MAC_ADDRESS,
+        __VALUE_CONVERTERS_MAC_ADDRESS,
+    )
+    return returned_values[0]
