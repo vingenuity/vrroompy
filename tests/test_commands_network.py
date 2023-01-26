@@ -60,12 +60,17 @@ class TestMacAddress(unittest.TestCase):
         self.assertEqual(str(MacAddress("19:AC:B5:D3:22:F4")), "19:AC:B5:D3:22:F4")
 
     def test_from_string(self):
-        self.assertEqual(MacAddress.from_string("19:AC:B5:D3:22:F4"), MacAddress("19:AC:B5:D3:22:F4"))
+        self.assertEqual(
+            MacAddress.from_string("19:AC:B5:D3:22:F4"), MacAddress("19:AC:B5:D3:22:F4")
+        )
 
     def test_pattern(self):
-        # Pattern also allows for hyphenated form, even though it's not what the VRROOM sends.
-        self.assertIsNotNone(fullmatch(MacAddress.pattern(), "19:AC:B5:D3:22:F4"))
-        self.assertIsNotNone(fullmatch(MacAddress.pattern(), "19-AC-B5-D3-22-F4"))
+        # Pattern allows for hyphenated form, even though it's not what the VRROOM sends.
+        self.assertIsNotNone(fullmatch(MacAddress.pattern(), "19:AC:B5:D3:E2:F4"))
+        self.assertIsNotNone(fullmatch(MacAddress.pattern(), "19-AC-B5-D3-E2-F4"))
+        # Ensure that lowercase also works
+        self.assertIsNotNone(fullmatch(MacAddress.pattern(), "19:ac:b5:d3:e2:f4"))
+        self.assertIsNotNone(fullmatch(MacAddress.pattern(), "19-ac-b5-d3-e2-f4"))
         # Verify that the length must be correct
         self.assertIsNone(fullmatch(MacAddress.pattern(), "19:AC:B5:D3:22"))
         self.assertIsNone(fullmatch(MacAddress.pattern(), "19:AC:B5:D3:22:F4:BB"))
